@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>暑假票價｜六福村線上購票</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+  <div class="site-header">
+    <div class="logo">
+      <span class="logo-icon">🎢</span>
+      <span>六福村主題遊樂園</span>
+    </div>
+    <div class="academic-tag">🎓 研究模擬</div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" style="width: 50%"></div></div>
+
+  <div class="hero">
+    <span class="hero-emoji">🎢</span>
+    <div class="hero-text">
+      <h1>成人主題樂園單日票</h1>
+      <p>週一至週五全日通用</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div id="t2-content"></div>
+
+    <button id="next-btn" class="btn btn-primary btn-large btn-full" disabled style="margin-top: 16px;">
+      請仔細看畫面（剩 <span id="countdown">10</span> 秒）
+    </button>
+  </div>
+
+  <div class="site-footer">
+    <strong>※ 學術研究模擬頁面 ※</strong>
+    本網站為東海大學 數位創新碩士學位學程學術研究模擬頁面<br>
+    所有票價與優惠資訊均為研究設計，不代表六福村實際定價
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/session.js"></script>
+<script src="js/tracking.js"></script>
+<script>
+if (!window.leofooSession.checkProgress('t2_page')) { /* 已重定向 */ }
+
+const group = window.leofooSession.getCurrentGroup();
+if (!group) {
+  alert('系統錯誤：無法取得分組資訊。請從頭開始填答。');
+  window.location.href = 'index.html';
+}
+
+// 五組畫面內容
+const GROUP_CONTENT = {
+  'A': `
+    <div class="order-card">
+      <div class="order-header">
+        <div class="order-title">六福村成人主題樂園單日票</div>
+        <div class="order-tag">平日</div>
+      </div>
+      <div class="order-body">
+        <div class="price-display"><span class="price-currency">NT$</span>1,624</div>
+      </div>
+      <ul class="features">
+        <li>全園遊樂設施暢玩</li>
+        <li>含動物園區入園資格</li>
+        <li>表演秀觀賞</li>
+      </ul>
+    </div>
+  `,
+  'B': `
+    <div class="order-card">
+      <div class="order-header">
+        <div class="order-title">六福村成人主題樂園單日票</div>
+        <div class="order-tag">平日</div>
+      </div>
+      <div class="order-body">
+        <div class="price-display"><span class="price-currency">NT$</span>1,624</div>
+      </div>
+      <div class="strategy-box box-b">
+        <span class="strategy-icon">📢</span>
+        <div class="strategy-content">
+          <strong>業者公告</strong>
+          因應暑假旺季營運成本上升，票價自即日起調整
+        </div>
+      </div>
+      <ul class="features">
+        <li>全園遊樂設施暢玩</li>
+        <li>含動物園區入園資格</li>
+        <li>表演秀觀賞</li>
+      </ul>
+    </div>
+  `,
+  'C': `
+    <div class="order-card">
+      <div class="order-header">
+        <div class="order-title">六福村成人主題樂園單日票</div>
+        <div class="order-tag">平日</div>
+      </div>
+      <div class="order-body">
+        <div class="price-label">平日原價</div>
+        <div class="price-old">NT$ 1,400</div>
+        <div class="price-arrow">▼</div>
+        <div class="price-label" style="margin-bottom: 0;">暑假票價</div>
+        <div class="price-display"><span class="price-currency">NT$</span>1,624</div>
+      </div>
+      <ul class="features">
+        <li>全園遊樂設施暢玩</li>
+        <li>含動物園區入園資格</li>
+        <li>表演秀觀賞</li>
+      </ul>
+    </div>
+  `,
+  'D': `
+    <div class="order-card">
+      <div class="order-header">
+        <div class="order-title">六福村成人主題樂園單日票</div>
+        <div class="order-tag">平日</div>
+      </div>
+      <div class="order-body">
+        <div class="price-display"><span class="price-currency">NT$</span>1,624</div>
+      </div>
+      <div class="strategy-box box-d">
+        <span class="strategy-icon">🎁</span>
+        <div class="strategy-content">
+          <strong>購票即贈</strong>
+          園內消費 <span class="highlight">$200</span> 折價券 × 1<br>
+          <small style="opacity: 0.8;">（限購票當日使用）</small>
+        </div>
+      </div>
+      <ul class="features">
+        <li>全園遊樂設施暢玩</li>
+        <li>含動物園區入園資格</li>
+        <li>表演秀觀賞</li>
+      </ul>
+    </div>
+  `,
+  'E': `
+    <div class="order-card">
+      <div class="order-header">
+        <div class="order-title">六福村成人主題樂園單日票</div>
+        <div class="order-tag">平日</div>
+      </div>
+      <div class="order-body">
+        <div class="price-display"><span class="price-currency">NT$</span>1,624</div>
+      </div>
+      <div class="strategy-box box-e">
+        <span class="strategy-icon">⏳</span>
+        <div class="strategy-content">
+          <strong>限量提醒</strong>
+          今日剩餘票數：<span class="highlight">23 張</span><br>
+          <small style="opacity: 0.8;">（售完即停止販售）</small>
+        </div>
+      </div>
+      <ul class="features">
+        <li>全園遊樂設施暢玩</li>
+        <li>含動物園區入園資格</li>
+        <li>表演秀觀賞</li>
+      </ul>
+    </div>
+  `
+};
+
+// 顯示對應組別內容
+document.getElementById('t2-content').innerHTML = GROUP_CONTENT[group];
+
+// 記錄頁面瀏覽（含分組）
+window.leofooTrack.trackPageView('T2', {
+  price_shown: 1624,
+  inventory_shown: group === 'E' ? 23 : null,
+  group: group
+});
+window.leofooTrack.trackDwellTime('T2');
+
+// 強制 10 秒停留
+let countdown = 10;
+const btn = document.getElementById('next-btn');
+const countdownEl = document.getElementById('countdown');
+
+const timer = setInterval(() => {
+  countdown--;
+  if (countdown > 0) {
+    countdownEl.textContent = countdown;
+  } else {
+    clearInterval(timer);
+    btn.disabled = false;
+    btn.textContent = '前往填寫第二階段問卷 →';
+  }
+}, 1000);
+
+btn.addEventListener('click', async () => {
+  if (btn.disabled) return;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loading"></span> 載入中...';
+  await window.leofooTrack.trackEvent('T2', 'click_next', { price_shown: 1624, group: group });
+  window.leofooSession.saveProgress('t2_survey');
+  window.location.href = 't2-survey.html';
+});
+</script>
+</body>
+</html>

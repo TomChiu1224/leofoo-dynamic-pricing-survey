@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>六福村線上購票｜票價資訊</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+  <div class="site-header">
+    <div class="logo">
+      <span class="logo-icon">🎢</span>
+      <span>六福村主題遊樂園</span>
+    </div>
+    <div class="academic-tag">🎓 研究模擬</div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" style="width: 15%"></div></div>
+
+  <div class="hero">
+    <span class="hero-emoji">🎢</span>
+    <div class="hero-text">
+      <h1>暢遊樂園｜線上購票</h1>
+      <p>新竹關西 · 全台最大主題樂園</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🎟️ 票價資訊</div>
+
+    <div class="alert alert-info" style="margin: 0 0 16px 0;">
+      💡 <span>請假設您想為自己購買<strong>成人主題樂園單日票</strong>，並依照畫面資訊作答。</span>
+    </div>
+
+    <div class="ticket-list">
+      <div class="ticket-row highlighted">
+        <div class="ticket-info">
+          <div class="ticket-type">成人票</div>
+          <div class="ticket-desc">滿 18 歲以上</div>
+        </div>
+        <div class="ticket-price">$1,400</div>
+      </div>
+      <div class="ticket-row">
+        <div class="ticket-info">
+          <div class="ticket-type">學生票</div>
+          <div class="ticket-desc">12 歲以上或學生（需出示學生證件）</div>
+        </div>
+        <div class="ticket-price">$1,200</div>
+      </div>
+      <div class="ticket-row">
+        <div class="ticket-info">
+          <div class="ticket-type">學童票</div>
+          <div class="ticket-desc">6-11 歲或身高 120cm 以上</div>
+        </div>
+        <div class="ticket-price">$1,000</div>
+      </div>
+      <div class="ticket-row">
+        <div class="ticket-info">
+          <div class="ticket-type">幼童票</div>
+          <div class="ticket-desc">3-5 歲或身高 100-120cm</div>
+        </div>
+        <div class="ticket-price">$800</div>
+      </div>
+      <div class="ticket-row">
+        <div class="ticket-info">
+          <div class="ticket-type">博愛票</div>
+          <div class="ticket-desc">孕婦、身障或滿 60 歲以上</div>
+        </div>
+        <div class="ticket-price">$700</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <button id="next-btn" class="btn btn-primary btn-large btn-full" disabled>
+      請先閱讀票價資訊（剩 <span id="countdown">8</span> 秒）
+    </button>
+  </div>
+
+  <div class="site-footer">
+    <strong>※ 學術研究模擬頁面 ※</strong>
+    本網站為東海大學 數位創新碩士學位學程學術研究模擬頁面<br>
+    非真實購票系統，與六福村實業股份有限公司無任何關聯
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/session.js"></script>
+<script src="js/tracking.js"></script>
+<script>
+// 進度檢查
+if (!window.leofooSession.checkProgress('t1_page')) { /* 已重定向 */ }
+
+// 記錄頁面瀏覽
+window.leofooTrack.trackPageView('T1', { price_shown: 1400 });
+window.leofooTrack.trackDwellTime('T1');
+
+// 強制 8 秒停留
+let countdown = 8;
+const btn = document.getElementById('next-btn');
+const countdownEl = document.getElementById('countdown');
+
+const timer = setInterval(() => {
+  countdown--;
+  if (countdown > 0) {
+    countdownEl.textContent = countdown;
+  } else {
+    clearInterval(timer);
+    btn.disabled = false;
+    btn.textContent = '前往填寫第一階段問卷 →';
+  }
+}, 1000);
+
+btn.addEventListener('click', async () => {
+  if (btn.disabled) return;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loading"></span> 載入中...';
+  await window.leofooTrack.trackEvent('T1', 'click_next', { price_shown: 1400 });
+  window.leofooSession.saveProgress('t1_survey');
+  window.location.href = 't1-survey.html';
+});
+</script>
+</body>
+</html>

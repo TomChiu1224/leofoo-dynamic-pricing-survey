@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>動態定價研究問卷｜東海大學</title>
+<meta name="description" content="動態定價策略對消費者公平感與購買意願之影響研究">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+  <div class="site-header">
+    <div class="logo">
+      <span class="logo-icon">🎢</span>
+      <span>動態定價研究</span>
+    </div>
+    <div class="academic-tag">🎓 學術研究</div>
+  </div>
+
+  <div class="landing-hero">
+    <div class="landing-emoji">🎢</div>
+    <div class="landing-title">消費者購票行為研究</div>
+    <div class="landing-subtitle">東海大學 數位創新碩士學位學程</div>
+  </div>
+
+  <div class="intro-card">
+    <h2>📋 研究說明</h2>
+    <p>您好，感謝您參與本學術研究。本問卷旨在了解消費者對於遊樂園票價的看法。</p>
+    <p>您將會看到一個<strong>模擬的售票網站畫面</strong>，請依照您的真實感受作答。</p>
+
+    <ul style="margin-top: 16px;">
+      <li>本問卷約需 <strong>6-7 分鐘</strong></li>
+      <li>所有回答完全<strong>匿名</strong>，僅供學術研究使用</li>
+      <li><strong>不會有實際付款</strong>，網站為模擬畫面</li>
+      <li>請務必在<strong>安靜不受干擾</strong>的環境下完成</li>
+      <li>請依照您看到畫面當下的<strong>直覺感受</strong>作答</li>
+    </ul>
+  </div>
+
+  <div class="intro-card" style="border-left-color: var(--accent);">
+    <h2>📝 同意聲明</h2>
+    <p style="font-size: 13px;">填寫本問卷即表示您：</p>
+    <ul>
+      <li>已年滿 18 歲</li>
+      <li>了解本研究之目的與性質</li>
+      <li>同意您所提供的資料僅供本研究使用</li>
+      <li>了解您可隨時中止填答而不會有任何不利影響</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <button id="start-btn" class="btn btn-primary btn-large btn-full">
+      開始填答 →
+    </button>
+  </div>
+
+  <div class="site-footer">
+    <strong>※ 學術研究模擬頁面 ※</strong>
+    本網站為東海大學 數位創新碩士學位學程<br>
+    學術研究模擬頁面，非真實購票系統<br>
+    與六福村實業股份有限公司無任何關聯<br>
+    填答資料僅供學術研究使用
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/session.js"></script>
+<script src="js/tracking.js"></script>
+<script>
+document.getElementById('start-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('start-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loading"></span> 正在啟動...';
+
+  try {
+    await window.leofooSession.getOrCreateSession();
+    await window.leofooTrack.trackPageView('start', { page: 'landing' });
+    window.leofooSession.saveProgress('t1_page');
+    window.location.href = 't1.html';
+  } catch (err) {
+    console.error(err);
+    btn.disabled = false;
+    btn.textContent = '開始填答 →';
+    alert('連線發生問題，請重新整理頁面再試。');
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>第三階段問卷｜六福村動態定價研究</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+  <div class="site-header">
+    <div class="logo">
+      <span class="logo-icon">🎢</span>
+      <span>六福村主題遊樂園</span>
+    </div>
+    <div class="academic-tag">🎓 研究模擬</div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" style="width: 85%"></div></div>
+
+  <div class="survey-intro">
+    <h2>📝 第三階段問卷（3/3）</h2>
+    <p>最後一階段了！請依照您<strong>剛才結帳當下的整體感受</strong>，依照您的真實感受作答。</p>
+  </div>
+
+  <form id="survey-form" novalidate>
+    <div class="question-list" id="question-list"></div>
+
+    <div class="section">
+      <button id="submit-btn" type="submit" class="btn btn-primary btn-large btn-full">
+        提交第三階段問卷 →
+      </button>
+    </div>
+  </form>
+
+  <div class="site-footer">
+    <strong>※ 學術研究模擬頁面 ※</strong>
+    本網站為東海大學 數位創新碩士學位學程學術研究模擬頁面
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/session.js"></script>
+<script src="js/tracking.js"></script>
+<script src="js/survey.js"></script>
+<script>
+if (!window.leofooSession.checkProgress('t3_survey')) { /* 已重定向 */ }
+window.leofooTrack.trackPageView('T3', { page: 't3_survey' });
+
+// T3 題目（措辭與 T1/T2 一致）
+const T3_QUESTIONS = [
+  { type: 'likert', qid: 't3_reason_1', text: '我覺得這個價格是合理的' },
+  { type: 'likert', qid: 't3_reason_2', text: '我覺得這個價格在邏輯上說得通' },
+  { type: 'likert', qid: 't3_fair_1', text: '我覺得這個價格對消費者來說是公平的' },
+  { type: 'likert', qid: 't3_intent_1', text: '在這個價格下，我願意購買這張票' },
+  { type: 'likert', qid: 't3_recommend', text: '我會推薦親友以這個價格購票' },
+  { type: 'likert', qid: 't3_revisit', text: '未來若再開放購票，我還會考慮六福村' }
+];
+
+// 全部隨機
+const shuffled = window.leofooSurvey.shuffle(T3_QUESTIONS);
+
+const listEl = document.getElementById('question-list');
+let html = '';
+shuffled.forEach((q, idx) => {
+  html += window.leofooSurvey.renderLikertQuestion(q.qid, q.text, idx + 1);
+});
+listEl.innerHTML = html;
+window.leofooSurvey.setupAnswerWatcher();
+window.leofooSurvey.setupGatekeeping('submit-btn', {
+  customLabel: '提交第三階段問卷'
+});
+
+// 提交
+document.getElementById('survey-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  if (!window.leofooSurvey.validateAllAnswered()) {
+    return;
+  }
+
+  window.leofooSurvey.showLoading('提交中...');
+
+  const questionOrder = shuffled.map(q => q.qid);
+  const answers = window.leofooSurvey.collectAnswers(questionOrder);
+  const ok = await window.leofooSurvey.submitAnswers(answers, 'T3');
+
+  if (!ok) {
+    window.leofooSurvey.hideLoading();
+    alert('提交失敗，請檢查網路後重試');
+    return;
+  }
+
+  window.leofooSession.saveProgress('final');
+  window.location.href = 'final.html';
+});
+</script>
+</body>
+</html>

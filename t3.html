@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>結帳確認｜六福村線上購票</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+  <div class="site-header">
+    <div class="logo">
+      <span class="logo-icon">🎢</span>
+      <span>六福村主題遊樂園</span>
+    </div>
+    <div class="academic-tag">🎓 研究模擬</div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" style="width: 75%"></div></div>
+
+  <div class="hero hero-mini">
+    <div class="hero-text">
+      <h1>結帳確認</h1>
+      <p>請確認您的訂單明細</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="order-card">
+      <div class="order-header">
+        <div class="order-title">📋 訂單明細</div>
+      </div>
+      <div class="order-summary">
+        <div class="summary-row">
+          <span>成人主題樂園單日票 × 1</span>
+          <span>NT$ 1,624</span>
+        </div>
+        <div class="summary-row">
+          <span style="color: var(--text-light);">小計</span>
+          <span style="color: var(--text-light);">NT$ 1,624</span>
+        </div>
+        <div class="summary-row total">
+          <span>應付總額</span>
+          <span class="price-display-sm">NT$ 1,624</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-info">
+      💡 <span>請依照您的真實意願做選擇。<strong>無論您選擇哪一個，都會進入下一階段問卷</strong>。</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
+      <button id="btn-buy" class="btn btn-primary btn-large btn-full">
+        🛒 立即購票
+      </button>
+      <button id="btn-later" class="btn btn-secondary btn-large btn-full">
+        下次再說
+      </button>
+    </div>
+
+    <p style="font-size: 11px; color: var(--text-light); text-align: center; margin-top: 12px;">
+      ※ 此為學術研究模擬，不會實際扣款
+    </p>
+  </div>
+
+  <div class="site-footer">
+    <strong>※ 學術研究模擬頁面 ※</strong>
+    本網站為東海大學 數位創新碩士學位學程學術研究模擬頁面
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/session.js"></script>
+<script src="js/tracking.js"></script>
+<script>
+if (!window.leofooSession.checkProgress('t3_page')) { /* 已重定向 */ }
+window.leofooTrack.trackPageView('T3', { page: 't3_checkout', price_shown: 1624 });
+window.leofooTrack.trackDwellTime('T3');
+
+async function handleDecision(status) {
+  const buyBtn = document.getElementById('btn-buy');
+  const laterBtn = document.getElementById('btn-later');
+  buyBtn.disabled = true;
+  laterBtn.disabled = true;
+
+  const sessionId = window.leofooSession.getCurrentSessionId();
+  const group = window.leofooSession.getCurrentGroup();
+
+  // 記錄事件
+  await window.leofooTrack.trackEvent('T3',
+    status === 'completed' ? 'click_buy' : 'click_later',
+    { price_shown: 1624, group: group }
+  );
+
+  // 寫入 orders 表
+  await window.LEOFOO_SUPABASE.from('orders').upsert({
+    session_id: sessionId,
+    created_at: new Date().toISOString(),
+    price_paid: status === 'completed' ? 1624 : 0,
+    status: status
+  }, { onConflict: 'session_id' });
+
+  window.leofooSession.saveProgress('t3_survey');
+  window.location.href = 't3-survey.html';
+}
+
+document.getElementById('btn-buy').addEventListener('click', () => handleDecision('completed'));
+document.getElementById('btn-later').addEventListener('click', () => handleDecision('abandoned'));
+</script>
+</body>
+</html>

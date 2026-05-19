@@ -1,0 +1,1012 @@
+/* ============================================================
+   六福村動態定價研究 v2.2 - 統一樣式
+   ============================================================ */
+
+:root {
+  --primary: #2C5F4F;
+  --primary-dark: #1F4438;
+  --primary-light: #4A8270;
+  --accent: #DC6B47;
+  --accent-dark: #B8593C;
+  --accent-light: #F0997B;
+  --bg: #FAF7F2;
+  --bg-card: #FFFFFF;
+  --bg-section: #F4F0E8;
+  --text: #2A2A2A;
+  --text-light: #6B6B6B;
+  --text-muted: #999999;
+  --border: #E5E0D8;
+  --border-dark: #D0CAC0;
+  --success: #5BAE83;
+  --error: #D94B4B;
+  --warning: #E8A547;
+  /* 五組訊息框配色 */
+  --msg-b-bg: #FFF7D6;
+  --msg-b-border: #E8C547;
+  --msg-b-text: #6B5400;
+  --msg-c-bg: #F0F4F1;
+  --msg-c-border: #2C5F4F;
+  --msg-c-text: #1F4438;
+  --msg-d-bg: #FFE4E4;
+  --msg-d-border: #DC6B47;
+  --msg-d-text: #8B2A1A;
+  --msg-e-bg: #FFE9D6;
+  --msg-e-border: #E8854D;
+  --msg-e-text: #8B4513;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, 'Microsoft JhengHei', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============== 容器 ============== */
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  background: var(--bg);
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: 100px;
+}
+
+/* ============== Header ============== */
+.site-header {
+  background: var(--primary);
+  color: white;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+.logo-icon {
+  font-size: 22px;
+}
+
+.academic-tag {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+/* ============== 進度條 ============== */
+.progress-bar {
+  height: 4px;
+  background: var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  transition: width 0.5s ease;
+}
+
+/* ============== 主視覺 ============== */
+.hero {
+  height: 140px;
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 50%, var(--primary-dark) 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 80% 30%, rgba(255,255,255,0.15) 0%, transparent 40%),
+    radial-gradient(circle at 20% 70%, rgba(255,255,255,0.1) 0%, transparent 40%);
+}
+
+.hero-emoji {
+  font-size: 56px;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+  position: relative;
+  z-index: 1;
+}
+
+.hero-text {
+  position: absolute;
+  bottom: 12px;
+  left: 20px;
+  color: white;
+  z-index: 2;
+}
+
+.hero-text h1 {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.hero-text p {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.hero-mini {
+  height: 80px;
+}
+
+.hero-mini .hero-text {
+  position: static;
+  text-align: center;
+}
+
+/* ============== 區塊 ============== */
+.section {
+  padding: 20px;
+}
+
+.section-title {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ============== 票價列表 ============== */
+.ticket-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ticket-row {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s;
+}
+
+.ticket-row.highlighted {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, #FFFFFF 0%, #FFF8F2 100%);
+  box-shadow: 0 4px 16px rgba(220, 107, 71, 0.15);
+  position: relative;
+}
+
+.ticket-row.highlighted::before {
+  content: '✓ 您的選擇';
+  position: absolute;
+  top: -10px;
+  right: 12px;
+  background: var(--accent);
+  color: white;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.ticket-info {
+  flex: 1;
+}
+
+.ticket-type {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.ticket-desc {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.ticket-price {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--primary);
+}
+
+.ticket-row.highlighted .ticket-price {
+  color: var(--accent);
+  font-size: 24px;
+}
+
+/* ============== 訂單卡 ============== */
+.order-card {
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.order-header {
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #FFF8F2 0%, #FFFFFF 100%);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.order-title {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.order-tag {
+  background: var(--primary);
+  color: white;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.order-body {
+  padding: 24px 18px;
+  text-align: center;
+}
+
+.price-display {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 42px;
+  font-weight: 900;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.price-currency {
+  font-size: 22px;
+  color: var(--accent);
+  vertical-align: 10px;
+  margin-right: 2px;
+}
+
+.price-old {
+  font-size: 16px;
+  color: var(--text-light);
+  text-decoration: line-through;
+  margin-bottom: 4px;
+}
+
+.price-label {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-bottom: 8px;
+}
+
+.price-arrow {
+  color: var(--accent);
+  font-size: 18px;
+  margin: 4px 0;
+}
+
+/* ============== 策略訊息框 ============== */
+.strategy-box {
+  margin: 16px 18px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border-left: 4px solid;
+  font-size: 13px;
+  line-height: 1.6;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.strategy-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.strategy-content strong {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+
+.strategy-content .highlight {
+  color: var(--accent);
+  font-weight: 900;
+  font-size: 16px;
+}
+
+.strategy-box.box-b {
+  background: var(--msg-b-bg);
+  border-color: var(--msg-b-border);
+  color: var(--msg-b-text);
+}
+
+.strategy-box.box-d {
+  background: var(--msg-d-bg);
+  border-color: var(--msg-d-border);
+  color: var(--msg-d-text);
+}
+
+.strategy-box.box-e {
+  background: var(--msg-e-bg);
+  border-color: var(--msg-e-border);
+  color: var(--msg-e-text);
+}
+
+/* ============== 特色清單 ============== */
+.features {
+  padding: 0 18px 16px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.features li {
+  font-size: 12px;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.features li::before {
+  content: '✓';
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* ============== 按鈕 ============== */
+.button-group {
+  padding: 0 18px 18px;
+  display: flex;
+  gap: 10px;
+}
+
+.button-group-vertical {
+  flex-direction: column;
+}
+
+.btn {
+  flex: 1;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  text-align: center;
+  display: inline-block;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 4px 14px rgba(220, 107, 71, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(220, 107, 71, 0.4);
+}
+
+.btn-secondary {
+  background: white;
+  color: var(--text-light);
+  border: 1.5px solid var(--border);
+}
+
+.btn-secondary:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-large {
+  padding: 18px 24px;
+  font-size: 17px;
+}
+
+.btn-full {
+  width: 100%;
+  margin: 8px 0;
+}
+
+/* ============== 結帳明細 ============== */
+.order-summary {
+  padding: 18px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--border);
+  font-size: 14px;
+}
+
+.summary-row:last-of-type {
+  border-bottom: none;
+}
+
+.summary-row.total {
+  border-top: 2px solid var(--text);
+  margin-top: 6px;
+  padding-top: 14px;
+  font-weight: 700;
+  font-size: 17px;
+}
+
+.summary-row.total .price-display-sm {
+  color: var(--accent);
+  font-size: 22px;
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 900;
+}
+
+/* ============== 問卷表單 ============== */
+.survey-intro {
+  padding: 20px;
+  background: var(--bg-card);
+  border-radius: 12px;
+  margin: 16px 20px;
+  border-left: 4px solid var(--primary);
+}
+
+.survey-intro h2 {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 18px;
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+
+.survey-intro p {
+  font-size: 13px;
+  color: var(--text-light);
+  line-height: 1.7;
+}
+
+.question-list {
+  padding: 0 20px;
+}
+
+.question-item {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+}
+
+.question-item.answered {
+  border-color: var(--success);
+  background: linear-gradient(135deg, #FFFFFF 0%, #F4FBF7 100%);
+}
+
+.question-item.error {
+  border-color: var(--error);
+  background: linear-gradient(135deg, #FFFFFF 0%, #FFF4F4 100%);
+}
+
+.question-number {
+  display: inline-block;
+  background: var(--primary);
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 24px;
+  margin-right: 8px;
+}
+
+.question-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+/* ============== Likert 量表 ============== */
+.likert-scale {
+  display: flex;
+  gap: 6px;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.likert-option {
+  flex: 1;
+  position: relative;
+}
+
+.likert-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.likert-option label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 4px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 11px;
+  color: var(--text-light);
+  background: white;
+  min-height: 56px;
+  justify-content: center;
+}
+
+.likert-option label:hover {
+  border-color: var(--primary-light);
+  background: var(--bg-section);
+}
+
+.likert-option input[type="radio"]:checked + label {
+  background: var(--primary);
+  border-color: var(--primary-dark);
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(44, 95, 79, 0.3);
+}
+
+.likert-number {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.likert-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* ============== 單選/複選按鈕 ============== */
+.choice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.choice-option {
+  position: relative;
+}
+
+.choice-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.choice-option label {
+  display: block;
+  padding: 12px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 14px;
+  background: white;
+  color: var(--text);
+}
+
+.choice-option label:hover {
+  border-color: var(--primary-light);
+  background: var(--bg-section);
+}
+
+.choice-option input:checked + label {
+  background: var(--primary);
+  border-color: var(--primary-dark);
+  color: white;
+  font-weight: 700;
+}
+
+.choice-checkbox label::before {
+  content: '☐';
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.choice-checkbox input:checked + label::before {
+  content: '☑';
+}
+
+/* ============== 文字輸入 ============== */
+.text-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 14px;
+  background: white;
+  transition: all 0.2s;
+}
+
+.text-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(44, 95, 79, 0.1);
+}
+
+/* ============== Footer ============== */
+.site-footer {
+  background: #1F2A28;
+  color: rgba(255,255,255,0.6);
+  padding: 16px 20px;
+  font-size: 11px;
+  line-height: 1.7;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.site-footer strong {
+  color: white;
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+/* ============== 落地頁專用 ============== */
+.landing-hero {
+  height: 240px;
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 50%, var(--primary-dark) 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.landing-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 80% 30%, rgba(255,255,255,0.15) 0%, transparent 40%),
+    radial-gradient(circle at 20% 70%, rgba(255,255,255,0.1) 0%, transparent 40%);
+}
+
+.landing-emoji {
+  font-size: 64px;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+  position: relative;
+  z-index: 1;
+}
+
+.landing-title {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 24px;
+  font-weight: 900;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.landing-subtitle {
+  font-size: 14px;
+  opacity: 0.9;
+  position: relative;
+  z-index: 1;
+}
+
+.intro-card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 20px;
+  border-left: 4px solid var(--primary);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+
+.intro-card h2 {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 18px;
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+
+.intro-card p {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.8;
+  margin-bottom: 12px;
+}
+
+.intro-card ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.intro-card ul li {
+  padding: 6px 0;
+  font-size: 13px;
+  color: var(--text-light);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.intro-card ul li::before {
+  content: '◆';
+  color: var(--accent);
+  font-size: 10px;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+/* ============== 完成頁 ============== */
+.complete-card {
+  text-align: center;
+  padding: 40px 24px;
+}
+
+.complete-emoji {
+  font-size: 80px;
+  margin-bottom: 20px;
+}
+
+.complete-title {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 26px;
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+
+.complete-message {
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.8;
+  margin-bottom: 24px;
+}
+
+/* ============== 警告與訊息 ============== */
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 12px 20px;
+  font-size: 13px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.alert-error {
+  background: #FFE4E4;
+  border: 1px solid var(--error);
+  color: #8B1A1A;
+}
+
+.alert-info {
+  background: #E8F4F0;
+  border: 1px solid var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.alert-warning {
+  background: #FFF7D6;
+  border: 1px solid var(--warning);
+  color: #6B5400;
+}
+
+/* ============== 進度指示器（守門機制） ============== */
+.progress-indicator {
+  position: sticky;
+  top: 50px;
+  z-index: 90;
+  background: white;
+  margin: 0 20px 16px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s;
+}
+
+.progress-indicator.complete {
+  border-color: var(--success);
+  background: linear-gradient(135deg, #FFFFFF 0%, #F4FBF7 100%);
+}
+
+.progress-indicator-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-indicator-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--primary));
+  border-radius: 4px;
+  transition: width 0.3s;
+  width: 0%;
+}
+
+.progress-indicator.complete .progress-indicator-fill {
+  background: var(--success);
+}
+
+.progress-indicator-text {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  min-width: 80px;
+}
+
+.progress-indicator.complete .progress-indicator-text {
+  color: var(--success);
+}
+
+/* 強化未答題目樣式 */
+.question-item.error {
+  border-color: var(--error);
+  background: linear-gradient(135deg, #FFFFFF 0%, #FFF4F4 100%);
+  box-shadow: 0 0 0 3px rgba(217, 75, 75, 0.15);
+  animation: shake 0.4s ease-in-out;
+}
+
+.question-item.error::before {
+  content: '⚠ 此題尚未回答';
+  display: block;
+  color: var(--error);
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  padding: 4px 8px;
+  background: #FFE4E4;
+  border-radius: 6px;
+  width: fit-content;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* 按鈕禁用態強化視覺 */
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--text-light) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.btn:disabled .btn-icon {
+  display: inline-block;
+}
+
+/* ============== 載入動畫 ============== */
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loading-overlay .spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 16px;
+}
+
+.loading-overlay p {
+  color: var(--primary);
+  font-weight: 500;
+}
+
+/* ============== 響應式 ============== */
+@media (max-width: 480px) {
+  .container { max-width: 100%; }
+  .site-header { padding: 12px 16px; }
+  .logo { font-size: 14px; }
+  .section { padding: 16px; }
+  .question-list { padding: 0 16px; }
+  .question-item { padding: 16px; }
+  .likert-option label { font-size: 10px; padding: 8px 2px; }
+  .likert-number { font-size: 16px; }
+  .price-display { font-size: 36px; }
+  .btn { padding: 12px 14px; font-size: 14px; }
+}
+
+/* ============== 工具類 ============== */
+.text-center { text-align: center; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.mb-16 { margin-bottom: 16px; }
+.hidden { display: none !important; }

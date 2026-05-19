@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>第二階段問卷｜六福村動態定價研究</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+  <div class="site-header">
+    <div class="logo">
+      <span class="logo-icon">🎢</span>
+      <span>六福村主題遊樂園</span>
+    </div>
+    <div class="academic-tag">🎓 研究模擬</div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" style="width: 60%"></div></div>
+
+  <div class="survey-intro">
+    <h2>📝 第二階段問卷（2/3）</h2>
+    <p>請依照您<strong>剛才看到的售票畫面</strong>，依照您的真實感受作答。本階段包含 14 題。</p>
+  </div>
+
+  <form id="survey-form" novalidate>
+    <div class="question-list" id="question-list"></div>
+
+    <div class="section">
+      <button id="submit-btn" type="submit" class="btn btn-primary btn-large btn-full">
+        提交第二階段問卷 →
+      </button>
+    </div>
+  </form>
+
+  <div class="site-footer">
+    <strong>※ 學術研究模擬頁面 ※</strong>
+    本網站為東海大學 數位創新碩士學位學程學術研究模擬頁面
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/session.js"></script>
+<script src="js/tracking.js"></script>
+<script src="js/survey.js"></script>
+<script>
+if (!window.leofooSession.checkProgress('t2_survey')) { /* 已重定向 */ }
+window.leofooTrack.trackPageView('T2', { page: 't2_survey' });
+
+// T2 題目（措辭與 T1/T3 完全一致；順序隨機）
+const T2_QUESTIONS = [
+  // 合理性 (2)
+  { type: 'likert', qid: 't2_reason_1', text: '我覺得這個價格是合理的' },
+  { type: 'likert', qid: 't2_reason_2', text: '我覺得這個價格在邏輯上說得通' },
+  // 公平性 (2)
+  { type: 'likert', qid: 't2_fair_1', text: '我覺得這個價格對消費者來說是公平的' },
+  { type: 'likert', qid: 't2_fair_2', text: '我覺得業者沒有佔消費者便宜' },
+  // 歸因 (2)
+  { type: 'likert', qid: 't2_attr_internal', text: '業者調漲票價的原因主要來自業者本身的考量' },
+  { type: 'likert', qid: 't2_attr_control', text: '業者可以選擇不要漲價' },
+  // 購買意願 (2)
+  { type: 'likert', qid: 't2_intent_1', text: '在這個價格下，我願意購買這張票' },
+  { type: 'likert', qid: 't2_intent_2', text: '我會考慮購買這張票' },
+  // 負面情緒 (3)
+  { type: 'likert', qid: 't2_emo_angry', text: '看到這個價格我感到生氣' },
+  { type: 'likert', qid: 't2_emo_disappointed', text: '看到這個價格我感到失望' },
+  { type: 'likert', qid: 't2_emo_betrayed', text: '看到這個價格我感到被佔便宜' },
+  // 注意力檢核
+  { type: 'likert', qid: 't2_attention', text: '為確認您仔細閱讀，本題請選擇「非常同意」（最右邊第 7 個選項）' }
+];
+
+// 全部隨機（v2.2 設計）
+const shuffled = window.leofooSurvey.shuffle(T2_QUESTIONS);
+
+const listEl = document.getElementById('question-list');
+let html = '';
+shuffled.forEach((q, idx) => {
+  html += window.leofooSurvey.renderLikertQuestion(q.qid, q.text, idx + 1);
+});
+listEl.innerHTML = html;
+window.leofooSurvey.setupAnswerWatcher();
+window.leofooSurvey.setupGatekeeping('submit-btn', {
+  customLabel: '提交第二階段問卷'
+});
+
+// 提交
+document.getElementById('survey-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  if (!window.leofooSurvey.validateAllAnswered()) {
+    return;
+  }
+
+  window.leofooSurvey.showLoading('提交中...');
+
+  const questionOrder = shuffled.map(q => q.qid);
+  const answers = window.leofooSurvey.collectAnswers(questionOrder);
+  const ok = await window.leofooSurvey.submitAnswers(answers, 'T2');
+
+  if (!ok) {
+    window.leofooSurvey.hideLoading();
+    alert('提交失敗，請檢查網路後重試');
+    return;
+  }
+
+  window.leofooSession.saveProgress('t3_page');
+  window.location.href = 't3.html';
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>請稍候｜六福村動態定價研究</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+  <div class="site-header">
+    <div class="logo">
+      <span class="logo-icon">🎢</span>
+      <span>六福村主題遊樂園</span>
+    </div>
+    <div class="academic-tag">🎓 研究模擬</div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" style="width: 35%"></div></div>
+
+  <div class="survey-intro" style="border-left-color: var(--accent);">
+    <h2>💭 小小問題</h2>
+    <p>在進入下一階段前，想了解您的一般消費習慣。</p>
+  </div>
+
+  <form id="filler-form" novalidate>
+    <div class="question-list" id="question-list"></div>
+
+    <div class="section">
+      <button id="submit-btn" type="submit" class="btn btn-primary btn-large btn-full">
+        繼續 →
+      </button>
+    </div>
+  </form>
+
+  <div class="site-footer">
+    <strong>※ 學術研究模擬頁面 ※</strong>
+    本網站為東海大學 數位創新碩士學位學程學術研究模擬頁面
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/session.js"></script>
+<script src="js/tracking.js"></script>
+<script src="js/survey.js"></script>
+<script>
+if (!window.leofooSession.checkProgress('filler')) { /* 已重定向 */ }
+window.leofooTrack.trackPageView('filler');
+
+// 填充任務（中性偏好題，避免促發效應）
+const html = window.leofooSurvey.renderSingleChoice(
+  'filler_pricing_attitude',
+  '一般而言，當您看到喜歡的商品有價格變動時，您通常會：',
+  1,
+  [
+    '立刻查詢更多資訊',
+    '等一段時間再決定',
+    '直接比較其他選擇',
+    '依當下心情而定'
+  ]
+);
+
+document.getElementById('question-list').innerHTML = html;
+window.leofooSurvey.setupAnswerWatcher();
+window.leofooSurvey.setupGatekeeping('submit-btn', {
+  customLabel: '繼續'
+});
+
+// 提交
+document.getElementById('filler-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  if (!window.leofooSurvey.validateAllAnswered()) {
+    return;
+  }
+
+  window.leofooSurvey.showLoading('提交中...');
+
+  const answers = window.leofooSurvey.collectAnswers(['filler_pricing_attitude']);
+  const ok = await window.leofooSurvey.submitAnswers(answers, 'filler');
+
+  if (!ok) {
+    window.leofooSurvey.hideLoading();
+    alert('提交失敗，請檢查網路後重試');
+    return;
+  }
+
+  window.leofooSession.saveProgress('t2_page');
+  window.location.href = 't2.html';
+});
+</script>
+</body>
+</html>
