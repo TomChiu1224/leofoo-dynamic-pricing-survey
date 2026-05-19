@@ -17,6 +17,11 @@ function generateUUID() {
 
 // 取得當前 session_id（如無則建立新的）
 async function getOrCreateSession() {
+  // 等待 Supabase 連線就緒
+  if (!window.LEOFOO_SUPABASE_READY) {
+    await window.waitForSupabase();
+  }
+
   let sessionId = sessionStorage.getItem(SESSION_KEY);
 
   if (sessionId) {

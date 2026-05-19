@@ -384,6 +384,11 @@ function collectAnswers(questionOrder) {
 
 // 提交答案到 Supabase（含 step 標記）
 async function submitAnswers(answers, step) {
+  // 等待 Supabase 連線就緒
+  if (!window.LEOFOO_SUPABASE_READY) {
+    await window.waitForSupabase();
+  }
+
   const enriched = answers.map(a => ({ ...a, step: step }));
 
   // 過濾掉沒答的（select 改 upsert 避免重複）

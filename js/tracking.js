@@ -1,5 +1,5 @@
 /* ============================================================
-   事件追蹤模組
+   事件追蹤模組（含 Supabase 等待機制）
    ============================================================ */
 
 let pageLoadTime = Date.now();
@@ -7,26 +7,38 @@ let pageLoadTime = Date.now();
 // 記錄頁面瀏覽事件
 async function trackPageView(step, props = {}) {
   pageLoadTime = Date.now();
-  const sessionId = window.leofooSession.getCurrentSessionId();
+
+  // 等待 Supabase 連線就緒
+  if (!window.LEOFOO_SUPABASE_READY) {
+    await window.waitForSupabase();
+  }
+
+  const sessionId = window.leofooSession ? window.leofooSession.getCurrentSessionId() : null;
   if (!sessionId) return;
 
-  await window.LEOFOO_SUPABASE.from('events').insert({
+  const { error } = await window.LEOFOO_SUPABASE.from('events').insert({
     session_id: sessionId,
     step: step,
     name: 'page_view',
     ts: new Date().toISOString(),
     props: props
   });
+
+  if (error) console.warn('[Leofoo] trackPageView 寫入失敗', error);
 }
 
 // 記錄一般事件
 async function trackEvent(step, name, props = {}) {
-  const sessionId = window.leofooSession.getCurrentSessionId();
+  if (!window.LEOFOO_SUPABASE_READY) {
+    await window.waitForSupabase();
+  }
+
+  const sessionId = window.leofooSession ? window.leofooSession.getCurrentSessionId() : null;
   if (!sessionId) return;
 
   const dwellTime = Math.floor((Date.now() - pageLoadTime) / 1000);
 
-  await window.LEOFOO_SUPABASE.from('events').insert({
+  const { error } = await window.LEOFOO_SUPABASE.from('events').insert({
     session_id: sessionId,
     step: step,
     name: name,
@@ -36,16 +48,17 @@ async function trackEvent(step, name, props = {}) {
     inventory_shown: props.inventory_shown || null,
     props: props
   });
+
+  if (error) console.warn('[Leofoo] trackEvent 寫入失敗', error);
 }
 
 // 記錄離開頁面（用於計算停留時間）
 function trackDwellTime(step) {
   window.addEventListener('beforeunload', () => {
     const dwellTime = Math.floor((Date.now() - pageLoadTime) / 1000);
-    const sessionId = window.leofooSession.getCurrentSessionId();
+    const sessionId = window.leofooSession ? window.leofooSession.getCurrentSessionId() : null;
     if (!sessionId) return;
 
-    // 使用 sendBeacon 確保即使頁面關閉也能送出
     const data = JSON.stringify({
       session_id: sessionId,
       step: step,
@@ -54,7 +67,6 @@ function trackDwellTime(step) {
       dwell_time: dwellTime
     });
 
-    // 注意：sendBeacon 直接呼叫 Supabase REST API 較複雜，這裡用 fetch keepalive
     fetch(`${SUPABASE_URL}/rest/v1/events`, {
       method: 'POST',
       headers: {
