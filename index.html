@@ -3,64 +3,145 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>動態定價研究問卷｜東海大學</title>
-<meta name="description" content="動態定價策略對消費者公平感與購買意願之影響研究">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<title>六福村主題遊樂園｜線上購票</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif;}
+body{background:#f4f4f4;}
+.container{max-width:480px;margin:0 auto;background:#f4f4f4;min-height:100vh;}
+/* 白底 header 仿六福村 */
+.site-header{background:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,.08);position:sticky;top:0;z-index:20;}
+.brand{display:flex;flex-direction:column;line-height:1;}
+.brand .cn{font-size:26px;font-weight:900;color:#E6007E;letter-spacing:2px;}
+.brand .en{font-size:10px;font-weight:700;color:#E6007E;letter-spacing:1px;margin-top:2px;}
+.brand .sub{font-size:8px;color:#E6007E;letter-spacing:3px;margin-top:1px;}
+.h-icons{display:flex;align-items:center;gap:16px;}
+.h-icons .ico{color:#E6007E;font-size:21px;position:relative;}
+.h-icons .cart .dot{position:absolute;top:-5px;right:-8px;background:#fff;border:1.5px solid #E6007E;color:#E6007E;font-size:10px;font-weight:700;width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+/* 票券卡 仿六福村 */
+.ticket-feed{padding:14px 14px 4px;}
+.tk-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,.1);margin-bottom:18px;}
+.tk-img{height:150px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.tk-img .emoji{font-size:62px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.25));z-index:1;}
+.tk-img .pay{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#E0B84C,#C9982A);color:#fff;font-size:10px;font-weight:700;padding:5px 9px;border-radius:7px;text-align:center;line-height:1.3;z-index:3;box-shadow:0 2px 5px rgba(0,0,0,.2);}
+.tk-img .brand-mini{position:absolute;top:12px;left:14px;color:#fff;font-size:17px;font-weight:900;letter-spacing:1px;z-index:3;text-shadow:0 1px 3px rgba(0,0,0,.3);}
+
+.tk-name-band{position:absolute;left:0;right:0;bottom:0;height:44px;z-index:2;background:#E6007E;display:flex;align-items:center;justify-content:center;}.tk-name-band .nm{color:#fff;font-size:21px;font-weight:900;letter-spacing:2px;text-shadow:0 1px 2px rgba(0,0,0,.25);}
+.tk-info{padding:14px 16px;}
+.tk-info .row1{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.tk-info .tname{font-size:19px;font-weight:800;color:#333;}
+.tk-info .ppl{font-size:13px;color:#1f1f1f;display:flex;align-items:center;gap:3px;white-space:nowrap;}
+.tk-info .row2{display:flex;justify-content:space-between;align-items:center;}
+.tk-info .note{font-size:13px;color:#1f1f1f;display:flex;align-items:center;gap:4px;}
+.tk-info .price{font-size:15px;color:#1f1f1f;}
+.tk-info .price b{font-size:26px;font-weight:900;color:#E6007E;margin-left:3px;}
+.cta-wrap{padding:6px 16px 14px;}
+.btn-buy{width:100%;background:#E6007E;color:#fff;border:none;font-size:19px;font-weight:900;padding:17px;border-radius:13px;cursor:pointer;box-shadow:0 6px 16px rgba(230,0,126,.35);letter-spacing:1px;}
+.btn-buy:active{transform:translateY(1px);}
+.btn-buy:disabled{opacity:.6;}
+.consent-mini{padding:0 20px 16px;font-size:13.5px;color:#1f1f1f;line-height:1.7;text-align:center;}
+.consent-mini b{color:#1f1f1f;}
+.site-footer{background:#333;color:#ededed;font-size:12px;line-height:1.7;text-align:center;padding:16px 20px 24px;}
+.site-footer strong{color:#E6007E;display:block;margin-bottom:4px;}
+.loading{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+<style>.question-number{background:#E6007E !important;color:#fff !important;border-color:#E6007E !important;}</style>
 </head>
 <body>
 <div class="container">
   <div class="site-header">
-    <div class="logo">
-      <span class="logo-icon">🎢</span>
-      <span>動態定價研究</span>
+    <div class="brand">
+      <span class="cn">六福村</span>
+      <span class="en">LEOFOO VILLAGE</span>
+      <span class="sub">主題遊樂園</span>
     </div>
-    <div class="academic-tag">🎓 學術研究</div>
+    <div class="h-icons">
+      <span class="ico cart">🛒<span class="dot">0</span></span>
+      <span class="ico">👤</span>
+      <span class="ico">☰</span>
+    </div>
   </div>
 
-  <div class="landing-hero">
-    <div class="landing-emoji">🎢</div>
-    <div class="landing-title">消費者購票行為研究</div>
-    <div class="landing-subtitle">東海大學 數位創新碩士學位學程</div>
+  <div class="ticket-feed">
+    <div class="tk-card">
+      <div class="tk-img" style="background:linear-gradient(135deg,#fdd0e7,#f9a8d4);">
+        <span class="brand-mini">六福村</span>
+        <span class="pay">信用卡<br>付款</span>
+        <span class="emoji">🎢</span>
+        <div class="tk-name-band"><span class="nm">成人票</span></div>
+      </div>
+      <div class="tk-info">
+        <div class="row1"><div class="tname">成人票 $1,400</div><div class="ppl">👤 1K+</div></div>
+        <div class="row2"><div class="note">⚡ 需於入園前一日先行購買</div><div class="price">NT$<b>1,400</b></div></div>
+      </div>
+    </div>
+
+    <div class="tk-card">
+      <div class="tk-img" style="background:linear-gradient(135deg,#cdeffd,#7fd4f5);">
+        <span class="brand-mini">六福村</span>
+        <span class="pay">信用卡<br>付款</span>
+        <span class="emoji">🎡</span>
+        <div class="tk-name-band"><span class="nm">學生票</span></div>
+      </div>
+      <div class="tk-info">
+        <div class="row1"><div class="tname">學生票 $1,200</div><div class="ppl">👤 500+</div></div>
+        <div class="row2"><div class="note">⚡ 需於入園前一日先行購買</div><div class="price">NT$<b>1,200</b></div></div>
+      </div>
+    </div>
+
+    <div class="tk-card">
+      <div class="tk-img" style="background:linear-gradient(135deg,#fde9c8,#fcc97f);">
+        <span class="brand-mini">六福村</span>
+        <span class="pay">信用卡<br>付款</span>
+        <span class="emoji">🎠</span>
+        <div class="tk-name-band"><span class="nm">學童票</span></div>
+      </div>
+      <div class="tk-info">
+        <div class="row1"><div class="tname">學童票 $1,000</div><div class="ppl">👤 500+</div></div>
+        <div class="row2"><div class="note">⚡ 需於入園前一日先行購買</div><div class="price">NT$<b>1,000</b></div></div>
+      </div>
+    </div>
+
+    <div class="tk-card">
+      <div class="tk-img" style="background:linear-gradient(135deg,#d6f5d6,#9ee49e);">
+        <span class="brand-mini">六福村</span>
+        <span class="pay">信用卡<br>付款</span>
+        <span class="emoji">🧸</span>
+        <div class="tk-name-band"><span class="nm">幼童票</span></div>
+      </div>
+      <div class="tk-info">
+        <div class="row1"><div class="tname">幼童票 $800</div><div class="ppl">👤 200+</div></div>
+        <div class="row2"><div class="note">⚡ 需於入園前一日先行購買</div><div class="price">NT$<b>800</b></div></div>
+      </div>
+    </div>
+
+    <div class="tk-card">
+      <div class="tk-img" style="background:linear-gradient(135deg,#e6dcf5,#c3a8e8);">
+        <span class="brand-mini">六福村</span>
+        <span class="pay">信用卡<br>付款</span>
+        <span class="emoji">🚂</span>
+        <div class="tk-name-band"><span class="nm">博愛票</span></div>
+      </div>
+      <div class="tk-info">
+        <div class="row1"><div class="tname">博愛票 $700</div><div class="ppl">👤 200+</div></div>
+        <div class="row2"><div class="note">⚡ 需於入園前一日先行購買</div><div class="price">NT$<b>700</b></div></div>
+      </div>
+    </div>
   </div>
 
-  <div class="intro-card">
-    <h2>📋 研究說明</h2>
-    <p>您好，感謝您參與本學術研究。本問卷旨在了解消費者對於遊樂園票價的看法。</p>
-    <p>您將會看到一個<strong>模擬的售票網站畫面</strong>，請依照您的真實感受作答。</p>
-
-    <ul style="margin-top: 16px;">
-      <li>本問卷約需 <strong>6-7 分鐘</strong></li>
-      <li>所有回答完全<strong>匿名</strong>，僅供學術研究使用</li>
-      <li><strong>不會有實際付款</strong>，網站為模擬畫面</li>
-      <li>請務必在<strong>安靜不受干擾</strong>的環境下完成</li>
-      <li>請依照您看到畫面當下的<strong>直覺感受</strong>作答</li>
-    </ul>
+  <div class="cta-wrap">
+    <button id="start-btn" class="btn-buy">立即購票 →</button>
   </div>
 
-  <div class="intro-card" style="border-left-color: var(--accent);">
-    <h2>📝 同意聲明</h2>
-    <p style="font-size: 13px;">填寫本問卷即表示您：</p>
-    <ul>
-      <li>已年滿 18 歲</li>
-      <li>了解本研究之目的與性質</li>
-      <li>同意您所提供的資料僅供本研究使用</li>
-      <li>了解您可隨時中止填答而不會有任何不利影響</li>
-    </ul>
-  </div>
-
-  <div class="section">
-    <button id="start-btn" class="btn btn-primary btn-large btn-full">
-      開始填答 →
-    </button>
+  <div class="consent-mini">
+    點擊「立即購票」即表示您<b>已滿 18 歲</b>，並了解本頁為東海大學學術研究模擬、<b>同意參與本研究</b>，作答資料僅供研究使用，您可<b>隨時中止</b>。
   </div>
 
   <div class="site-footer">
     <strong>※ 學術研究模擬頁面 ※</strong>
-    本網站為東海大學 數位創新碩士學位學程<br>
-    學術研究模擬頁面，非真實購票系統<br>
-    與六福村實業股份有限公司無任何關聯<br>
-    填答資料僅供學術研究使用
+    本網站為東海大學 數位創新碩士學位學程學術研究模擬頁面<br>
+    非真實購票系統，與六福村實業股份有限公司無任何關聯
   </div>
 </div>
 
@@ -72,8 +153,7 @@
 document.getElementById('start-btn').addEventListener('click', async () => {
   const btn = document.getElementById('start-btn');
   btn.disabled = true;
-  btn.innerHTML = '<span class="loading"></span> 正在啟動...';
-
+  btn.innerHTML = '<span class="loading"></span> 正在進入...';
   try {
     await window.leofooSession.getOrCreateSession();
     await window.leofooTrack.trackPageView('start', { page: 'landing' });
@@ -82,7 +162,7 @@ document.getElementById('start-btn').addEventListener('click', async () => {
   } catch (err) {
     console.error(err);
     btn.disabled = false;
-    btn.textContent = '開始填答 →';
+    btn.textContent = '立即購票 →';
     alert('連線發生問題，請重新整理頁面再試。');
   }
 });

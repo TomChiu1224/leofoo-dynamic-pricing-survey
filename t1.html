@@ -3,124 +3,242 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>六福村線上購票｜票價資訊</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<title>六福村線上購票｜成人單日票</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<style>
+/* ===== 六福村桃紅風格（T1/T2/T3 共用）===== */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif;}
+body{background:#f4f4f4;}
+.container{max-width:480px;margin:0 auto;background:#f4f4f4;min-height:100vh;}
+.site-header{background:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 6px rgba(0,0,0,.08);position:sticky;top:0;z-index:20;}
+.brand{display:flex;flex-direction:column;line-height:1;}
+.brand .cn{font-size:24px;font-weight:900;color:#E6007E;letter-spacing:2px;}
+.brand .en{font-size:9px;font-weight:700;color:#E6007E;letter-spacing:1px;margin-top:2px;}
+.brand .sub{font-size:7.5px;color:#E6007E;letter-spacing:3px;margin-top:1px;}
+.h-icons{display:flex;align-items:center;gap:15px;}
+.h-icons .ico{color:#E6007E;font-size:20px;position:relative;}
+.h-icons .cart .dot{position:absolute;top:-5px;right:-8px;background:#fff;border:1.5px solid #E6007E;color:#E6007E;font-size:10px;font-weight:700;width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+/* 步驟條 */
+.steps{display:flex;background:#E6007E;padding:9px 14px;gap:6px;justify-content:center;align-items:center;}
+.steps .s{font-size:13px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:5px;}
+.steps .s.on{color:#fff;font-weight:700;}
+.steps .s .c{width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:13.5px;}
+.steps .s.on .c{background:#fff;color:#E6007E;}
+.steps .arrow{color:rgba(255,255,255,.5);font-size:13.5px;}
+/* 票券卡（六福村版型）*/
+.ticket-feed{padding:14px 14px 2px;}
+.tk-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,.1);margin-bottom:16px;}
+.tk-card.hot{outline:3px solid #E6007E;outline-offset:-1px;}
+.tk-img{height:140px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.tk-img .emoji{font-size:58px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.25));z-index:1;}
+.tk-img .pay{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#E0B84C,#C9982A);color:#fff;font-size:9.5px;font-weight:700;padding:5px 8px;border-radius:7px;text-align:center;line-height:1.3;z-index:3;box-shadow:0 2px 5px rgba(0,0,0,.2);}
+.tk-img .brand-mini{position:absolute;top:11px;left:13px;color:#fff;font-size:16px;font-weight:900;letter-spacing:1px;z-index:3;text-shadow:0 1px 3px rgba(0,0,0,.3);}
+
+.tk-name-band{position:absolute;left:0;right:0;bottom:0;height:44px;z-index:2;background:#E6007E;display:flex;align-items:center;justify-content:center;}.tk-name-band .nm{color:#fff;font-size:21px;font-weight:900;letter-spacing:2px;text-shadow:0 1px 2px rgba(0,0,0,.25);}
+.tk-info{padding:13px 16px;}
+.tk-info .row1{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:11px;}
+.tk-info .tname{font-size:18px;font-weight:800;color:#333;}
+.tk-info .ppl{font-size:13.5px;color:#1f1f1f;white-space:nowrap;}
+.tk-info .row2{display:flex;justify-content:space-between;align-items:center;}
+.tk-info .note{font-size:13.5px;color:#1f1f1f;}
+.tk-info .price{font-size:14px;color:#1f1f1f;}
+.tk-info .price b{font-size:24px;font-weight:900;color:#E6007E;margin-left:3px;}
+.qty{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #f0f0f0;margin-top:12px;padding-top:12px;}
+.qty .lab{font-size:13px;color:#1f1f1f;font-weight:700;}
+.qty .ctrl{display:flex;align-items:center;gap:13px;}
+.qty .qb{width:32px;height:32px;border-radius:8px;border:1.5px solid #E6007E;color:#E6007E;font-size:19px;font-weight:700;display:flex;align-items:center;justify-content:center;background:#fff;}
+.qty .qn{font-size:17px;font-weight:800;min-width:18px;text-align:center;}
+/* T2 訂單卡（單張漲價票）*/
+.order-card{background:#fff;border-radius:14px;padding:0 0 14px;box-shadow:0 3px 12px rgba(0,0,0,.1);margin:14px 14px 0;overflow:hidden;}
+.order-top{height:120px;background:linear-gradient(135deg,#fdd0e7,#f9a8d4);position:relative;display:flex;align-items:center;justify-content:center;}
+.order-top .flags{position:absolute;top:0;left:0;right:0;height:18px;background:repeating-linear-gradient(90deg,#E6007E 0 14px,#00AEEF 14px 28px,#F7941E 28px 42px);opacity:.8;}
+.order-top .brand-mini{position:absolute;top:11px;left:13px;color:#fff;font-size:16px;font-weight:900;text-shadow:0 1px 3px rgba(0,0,0,.3);}
+.order-top .emoji{font-size:54px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.25));}
+.order-title{font-weight:800;font-size:16px;color:#333;text-align:center;padding:14px 16px 4px;}
+.order-tag{display:inline-block;background:#E6007E;color:#fff;font-size:13.5px;font-weight:700;padding:3px 10px;border-radius:6px;margin:0 auto;}
+.order-tagwrap{text-align:center;margin-bottom:8px;}
+.order-body{text-align:center;padding:4px 0;}
+.price-display{font-weight:900;font-size:38px;color:#E6007E;line-height:1.1;}
+.price-currency{font-size:18px;margin-right:2px;}
+.price-label{font-size:13px;color:#1f1f1f;margin-bottom:3px;}
+.price-old{font-size:17px;color:#555;text-decoration:line-through;}
+.price-arrow{color:#E6007E;font-size:14px;margin:3px 0;}
+.features{list-style:none;margin:12px 16px 0;border-top:1px solid #f0f0f0;padding-top:12px;}
+.features li{font-size:13px;color:#1f1f1f;padding:3px 0 3px 20px;position:relative;}
+.features li::before{content:"✓";position:absolute;left:2px;color:#E6007E;font-weight:800;}
+/* 策略框 */
+.strategy-box{display:flex;gap:11px;align-items:flex-start;border-radius:11px;padding:13px 14px;margin:14px 16px 0;}
+.strategy-box.box-b{background:#EAF6FB;border:1px solid #c5e6f5;}
+.strategy-box.box-d{background:#FFF0F6;border:1px solid #f8cfe2;}
+.strategy-box.box-e{background:#FFF3E9;border:1px solid #f8d9bd;}
+.strategy-icon{font-size:22px;flex:0 0 auto;}
+.strategy-content{font-size:13px;color:#555;line-height:1.6;}
+.strategy-content strong{display:block;font-size:14px;color:#E6007E;margin-bottom:2px;}
+.strategy-content .highlight{color:#E6007E;font-weight:800;}
+/* 商家回饋框（問卷包裝）*/
+.feedback-card{background:#fff;border:2px solid #f8cfe2;border-radius:14px;padding:16px;margin:16px 14px;}
+.fb-head{display:flex;align-items:center;gap:9px;margin-bottom:5px;}
+.fb-head .ic{font-size:20px;}
+.fb-head .t{font-size:16px;font-weight:800;color:#E6007E;}
+.fb-sub{font-size:13.5px;color:#1f1f1f;line-height:1.6;margin-bottom:8px;}
+/* survey.js 題目 → 桃紅風格 */
+.question-item{background:transparent;border:none;padding:14px 0 4px;border-top:1px solid #f3f3f3;margin-top:8px;}
+.question-item:first-of-type{border-top:none;}
+.question-text{font-size:14.5px;color:#3b3b3b;font-weight:600;line-height:1.5;margin-bottom:10px;}
+.question-number{display:inline-block;color:#444;font-size:12px;font-weight:700;margin-right:6px;}
+.likert-scale{display:flex;gap:5px;}
+.likert-option{flex:1;}
+.likert-option input{display:none;}
+.likert-option label{display:block;border:1.5px solid #edd4e1;border-radius:9px;padding:11px 2px;text-align:center;cursor:pointer;background:#fff;}
+.likert-option label span:last-child{display:none;}
+.likert-number{font-size:15px;font-weight:800;color:#3a3a3a;}
+.likert-option input:checked + label{background:#E6007E;border-color:#E6007E;}
+.likert-option input:checked + label .likert-number{color:#fff;}
+.likert-labels{display:flex;justify-content:space-between;font-size:13px;color:#333;margin-top:5px;}
+.choice-list{display:flex;flex-direction:column;gap:7px;}
+.choice-option input{display:none;}
+.choice-option label{display:block;border:1.5px solid #edd4e1;border-radius:9px;padding:11px 14px;font-size:14px;color:#444;cursor:pointer;background:#fff;}
+.choice-option input:checked + label{background:#E6007E;border-color:#E6007E;color:#fff;font-weight:700;}
+/* 按鈕 */
+.btn,.btn-primary{width:100%;background:#E6007E;color:#fff;border:none;font-size:17px;font-weight:800;padding:16px;border-radius:13px;cursor:pointer;box-shadow:0 5px 16px rgba(230,0,126,.32);margin-top:8px;letter-spacing:1px;}
+.btn:disabled{background:#e0b8cd;box-shadow:none;cursor:default;}
+.loading{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.consent{font-size:13.5px;color:#1f1f1f;text-align:center;padding:0 20px 14px;line-height:1.6;}
+.site-footer{background:#333;color:#ededed;font-size:12px;line-height:1.7;text-align:center;padding:16px 20px 24px;}
+.site-footer strong{color:#E6007E;display:block;margin-bottom:4px;}
+</style>
+
+<style>.question-number{background:#E6007E !important;color:#fff !important;border-color:#E6007E !important;}</style>
 </head>
 <body>
 <div class="container">
   <div class="site-header">
-    <div class="logo">
-      <span class="logo-icon">🎢</span>
-      <span>六福村主題遊樂園</span>
-    </div>
-    <div class="academic-tag">🎓 研究模擬</div>
+    <div class="brand"><span class="cn">六福村</span><span class="en">LEOFOO VILLAGE</span><span class="sub">主題遊樂園</span></div>
+    <div class="h-icons"><span class="ico cart">🛒<span class="dot">1</span></span><span class="ico">👤</span><span class="ico">☰</span></div>
+  </div>
+  <div class="steps">
+    <div class="s on"><span class="c">1</span>選擇票券</div><span class="arrow">›</span>
+    <div class="s"><span class="c">2</span>確認結帳</div><span class="arrow">›</span>
+    <div class="s"><span class="c">3</span>完成</div>
   </div>
 
-  <div class="progress-bar"><div class="progress-fill" style="width: 15%"></div></div>
+  <div class="ticket-feed"><div class="tk-card hot">
+      <div class="tk-img" style="background:linear-gradient(135deg,#fdd0e7,#f9a8d4);">
+        <span class="brand-mini">六福村</span><span class="pay">信用卡<br>付款</span><span class="emoji">🎢</span>
+        <div class="tk-name-band"><span class="nm">成人票</span></div>
+      </div>
+      <div class="tk-info">
+        <div class="row1"><div class="tname">成人票 $1,400</div><div class="ppl">👤 1K+</div></div>
+        <div class="row2"><div class="note">⚡ 需於入園前一日先行購買</div><div class="price">NT$<b>1,400</b></div></div>
+        <div class="qty"><span class="lab">購買張數</span><div class="ctrl"><div class="qb">−</div><div class="qn">1</div><div class="qb">＋</div></div></div>
+      </div></div><div class="tk-card">
+      <div class="tk-img" style="background:linear-gradient(135deg,#cdeffd,#7fd4f5);">
+        <span class="brand-mini">六福村</span><span class="pay">信用卡<br>付款</span><span class="emoji">🎡</span>
+        <div class="tk-name-band"><span class="nm">學生票</span></div>
+      </div>
+      <div class="tk-info">
+        <div class="row1"><div class="tname">學生票 $1,200</div><div class="ppl">👤 500+</div></div>
+        <div class="row2"><div class="note">⚡ 需於入園前一日先行購買</div><div class="price">NT$<b>1,200</b></div></div>
+        
+      </div></div><div class="tk-card">
+      <div class="tk-img" style="background:linear-gradient(135deg,#fde9c8,#fcc97f);">
+        <span class="brand-mini">六福村</span><span class="pay">信用卡<br>付款</span><span class="emoji">🎠</span>
+        <div class="tk-name-band"><span class="nm">學童票</span></div>
+      </div>
+      <div class="tk-info">
+        <div class="row1"><div class="tname">學童票 $1,000</div><div class="ppl">👤 500+</div></div>
+        <div class="row2"><div class="note">⚡ 需於入園前一日先行購買</div><div class="price">NT$<b>1,000</b></div></div>
+        
+      </div></div><div class="tk-card">
+      <div class="tk-img" style="background:linear-gradient(135deg,#d6f5d6,#9ee49e);">
+        <span class="brand-mini">六福村</span><span class="pay">信用卡<br>付款</span><span class="emoji">🧸</span>
+        <div class="tk-name-band"><span class="nm">幼童票</span></div>
+      </div>
+      <div class="tk-info">
+        <div class="row1"><div class="tname">幼童票 $800</div><div class="ppl">👤 200+</div></div>
+        <div class="row2"><div class="note">⚡ 需於入園前一日先行購買</div><div class="price">NT$<b>800</b></div></div>
+        
+      </div></div><div class="tk-card">
+      <div class="tk-img" style="background:linear-gradient(135deg,#e6dcf5,#c3a8e8);">
+        <span class="brand-mini">六福村</span><span class="pay">信用卡<br>付款</span><span class="emoji">🚂</span>
+        <div class="tk-name-band"><span class="nm">博愛票</span></div>
+      </div>
+      <div class="tk-info">
+        <div class="row1"><div class="tname">博愛票 $700</div><div class="ppl">👤 200+</div></div>
+        <div class="row2"><div class="note">⚡ 需於入園前一日先行購買</div><div class="price">NT$<b>700</b></div></div>
+        
+      </div></div></div>
 
-  <div class="hero">
-    <span class="hero-emoji">🎢</span>
-    <div class="hero-text">
-      <h1>暢遊樂園｜線上購票</h1>
-      <p>新竹關西 · 全台最大主題樂園</p>
-    </div>
+  <div class="feedback-card">
+    <div class="fb-head"><span class="ic">💬</span><span class="t">購買前，聽聽您的想法</span></div>
+    <div class="fb-sub">在您決定是否購買前，請依上方<strong>成人票 NT$1,400</strong> 的價格，憑直覺回答下列問題。</div>
+    <form id="survey-form" novalidate>
+      <div id="question-list"></div>
+      <button id="submit-btn" type="submit" class="btn" disabled>請先看完票券資訊（剩 <span id="countdown">8</span> 秒）</button>
+    </form>
   </div>
 
-  <div class="section">
-    <div class="section-title">🎟️ 票價資訊</div>
-
-    <div class="alert alert-info" style="margin: 0 0 16px 0;">
-      💡 <span>請假設您想為自己購買<strong>成人主題樂園單日票</strong>，並依照畫面資訊作答。</span>
-    </div>
-
-    <div class="ticket-list">
-      <div class="ticket-row highlighted">
-        <div class="ticket-info">
-          <div class="ticket-type">成人票</div>
-          <div class="ticket-desc">滿 18 歲以上</div>
-        </div>
-        <div class="ticket-price">$1,400</div>
-      </div>
-      <div class="ticket-row">
-        <div class="ticket-info">
-          <div class="ticket-type">學生票</div>
-          <div class="ticket-desc">12 歲以上或學生（需出示學生證件）</div>
-        </div>
-        <div class="ticket-price">$1,200</div>
-      </div>
-      <div class="ticket-row">
-        <div class="ticket-info">
-          <div class="ticket-type">學童票</div>
-          <div class="ticket-desc">6-11 歲或身高 120cm 以上</div>
-        </div>
-        <div class="ticket-price">$1,000</div>
-      </div>
-      <div class="ticket-row">
-        <div class="ticket-info">
-          <div class="ticket-type">幼童票</div>
-          <div class="ticket-desc">3-5 歲或身高 100-120cm</div>
-        </div>
-        <div class="ticket-price">$800</div>
-      </div>
-      <div class="ticket-row">
-        <div class="ticket-info">
-          <div class="ticket-type">博愛票</div>
-          <div class="ticket-desc">孕婦、身障或滿 60 歲以上</div>
-        </div>
-        <div class="ticket-price">$700</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <button id="next-btn" class="btn btn-primary btn-large btn-full" disabled>
-      請先閱讀票價資訊（剩 <span id="countdown">8</span> 秒）
-    </button>
-  </div>
-
-  <div class="site-footer">
-    <strong>※ 學術研究模擬頁面 ※</strong>
-    本網站為東海大學 數位創新碩士學位學程學術研究模擬頁面<br>
-    非真實購票系統，與六福村實業股份有限公司無任何關聯
-  </div>
+  <div class="consent">您的回答僅供東海大學學術研究使用，可隨時中止。</div>
+  <div class="site-footer"><strong>※ 學術研究模擬頁面 ※</strong>本網站為東海大學 數位創新碩士學位學程學術研究模擬頁面<br>非真實購票系統，與六福村實業股份有限公司無任何關聯</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0"></script>
 <script src="js/supabase-config.js"></script>
 <script src="js/session.js"></script>
 <script src="js/tracking.js"></script>
+<script src="js/survey.js"></script>
 <script>
-// 進度檢查
 if (!window.leofooSession.checkProgress('t1_page')) { /* 已重定向 */ }
-
-// 記錄頁面瀏覽
 window.leofooTrack.trackPageView('T1', { price_shown: 1400 });
 window.leofooTrack.trackDwellTime('T1');
 
-// 強制 8 秒停留
-let countdown = 8;
-const btn = document.getElementById('next-btn');
-const countdownEl = document.getElementById('countdown');
+const T1_QUESTIONS = [
+  { type: 'single', qid: 't1_price_perception', text: '你認為六福村成人票 NT$1,400 在台灣遊樂園市場屬於：', options: ['偏低', '合理', '偏高', '非常高'], fixed: true },
+  { type: 'likert', qid: 't1_reason_1', text: '我覺得這個價格是合理的' },
+  { type: 'likert', qid: 't1_reason_2', text: '我覺得這個價格在邏輯上說得通' },
+  { type: 'likert', qid: 't1_fair_1', text: '我覺得這個價格對消費者來說是公平的' },
+  { type: 'likert', qid: 't1_fair_2', text: '我覺得業者沒有佔消費者便宜' },
+  { type: 'likert', qid: 't1_intent_1', text: '在這個價格下，我願意購買這張票' },
+  { type: 'likert', qid: 't1_intent_2', text: '我會考慮購買這張票' },
+  { type: 'likert', qid: 't1_attention', text: '為確認您仔細閱讀，本題請選擇「有點不同意」（左邊第 3 個選項）' },
+  { type: 'yesno', qid: 't1_familiar', text: '我過去有去過六福村主題遊樂園', fixed_last: true }
+];
+const fixedFirst = T1_QUESTIONS.filter(q => q.fixed);
+const fixedLast = T1_QUESTIONS.filter(q => q.fixed_last);
+const middle = T1_QUESTIONS.filter(q => !q.fixed && !q.fixed_last);
+const shuffled = window.leofooSurvey.shuffle(middle);
+const finalOrder = [...fixedFirst, ...shuffled, ...fixedLast];
+let html = '';
+finalOrder.forEach((q, idx) => {
+  const num = idx + 1;
+  if (q.type === 'likert') html += window.leofooSurvey.renderLikertQuestion(q.qid, q.text, num);
+  else if (q.type === 'single') html += window.leofooSurvey.renderSingleChoice(q.qid, q.text, num, q.options);
+  else if (q.type === 'yesno') html += window.leofooSurvey.renderYesNo(q.qid, q.text, num);
+});
+document.getElementById('question-list').innerHTML = html;
+window.leofooSurvey.setupAnswerWatcher();
 
+let countdown = 8;
+const cd = document.getElementById('countdown');
 const timer = setInterval(() => {
   countdown--;
-  if (countdown > 0) {
-    countdownEl.textContent = countdown;
-  } else {
-    clearInterval(timer);
-    btn.disabled = false;
-    btn.textContent = '前往填寫第一階段問卷 →';
-  }
+  if (countdown > 0) { cd.textContent = countdown; }
+  else { clearInterval(timer); window.leofooSurvey.setupGatekeeping('submit-btn', { customLabel: '送出並繼續 →' }); }
 }, 1000);
 
-btn.addEventListener('click', async () => {
-  if (btn.disabled) return;
-  btn.disabled = true;
-  btn.innerHTML = '<span class="loading"></span> 載入中...';
-  await window.leofooTrack.trackEvent('T1', 'click_next', { price_shown: 1400 });
-  window.leofooSession.saveProgress('t1_survey');
-  window.location.href = 't1-survey.html';
+document.getElementById('survey-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!window.leofooSurvey.validateAllAnswered()) return;
+  window.leofooSurvey.showLoading('提交中...');
+  const questionOrder = finalOrder.map(q => q.qid);
+  const answers = window.leofooSurvey.collectAnswers(questionOrder);
+  const ok = await window.leofooSurvey.submitAnswers(answers, 'T1');
+  if (!ok) { window.leofooSurvey.hideLoading(); alert('提交失敗，請檢查網路後重試'); return; }
+  await window.leofooSession.assignRandomGroup();
+  window.leofooSession.saveProgress('filler');
+  window.location.href = 'filler.html';
 });
 </script>
 </body>
