@@ -175,36 +175,83 @@ const MC_QUESTIONS = {
 const mcQ = MC_QUESTIONS[group];
 
 // 人口統計題
+// 2026/10/28：性別、年齡、教育程度、年收入、職業的選項與存檔代碼，
+// 已與飯店研究（dynamic-pricing-test）T0 基本資料完全同步，兩個研究可直接對照。
+// 遊樂園造訪次數為六福村專用題，飯店沒有。
 const DEM_QUESTIONS = [
-  { type: 'single', qid: 'dem_gender', text: '性別', options: ['男', '女', '其他', '不願透露'] },
-  { type: 'single', qid: 'dem_age', text: '年齡', options: ['18-25', '26-35', '36-45', '46-55', '56 以上'] },
-  { type: 'single', qid: 'dem_edu', text: '最高學歷', options: ['高中職以下', '專科 / 大學', '碩士以上'] },
-  { type: 'single', qid: 'dem_income', text: '家庭年收入', options: ['低於 60 萬', '60 - 150 萬', '高於 150 萬'] },
+  { type: 'single', qid: 'dem_gender', text: '性別', options: ['男性', '女性', '非二元性別'] },
+  { type: 'single', qid: 'dem_age', text: '年齡區間', options: [
+    '18 歲以下', '18—24 歲', '25—34 歲', '35—44 歲', '45—54 歲', '55—64 歲', '65 歲以上'
+  ] },
+  { type: 'single', qid: 'dem_edu', text: '教育程度', options: ['國中以下', '高中/高職', '大學/大專', '研究所', '博士'] },
+  { type: 'single', qid: 'dem_income', text: '年收入區間', options: ['低於 50 萬', '50—100 萬', '100—200 萬', '200 萬以上'] },
   { type: 'single', qid: 'dem_occupation', text: '職業（台灣常見類別）', options: [
     '學生',
     '軍公教',
-    '教育 / 研究',
-    '醫療 / 護理',
+    '教育/研究',
+    '醫療/護理',
     '資訊科技',
-    '金融 / 保險',
-    '製造業 / 工業',
-    '營建 / 土木 / 不動產',
-    '批發零售 / 門市 / 銷售',
-    '行銷 / 專案 / 企劃',
-    '餐飲 / 旅宿 / 觀光',
-    '運輸 / 倉儲 / 物流',
-    '服務業（百貨、客服等）',
-    '文創 / 設計 / 媒體',
+    '金融/保險',
+    '製造業/工業',
+    '營建/土木/不動產',
+    '批發零售/門市/銷售',
+    '行銷/專案/企劃',
+    '餐飲/旅宿/觀光',
+    '運輸/倉儲/物流',
+    '服務業(百貨、客服等)',
+    '文創/設計/媒體',
     '農林漁牧',
-    '自由業 / 接案',
-    '家庭主婦 / 主夫',
+    '自由業/接案',
+    '家庭主婦/主夫',
     '退休',
-    '待業 / 求職中',
-    '其他',
-    '不願透露'
+    '待業/求職中',
+    '其他'
   ] },
   { type: 'single', qid: 'dem_visit_freq', text: '過去一年遊樂園造訪次數', options: ['0 次', '1-2 次', '3-5 次', '6 次以上'] }
 ];
+
+// 畫面選項 → 資料庫存檔代碼（與飯店研究 demographics 表的存法一字不差）
+// 沒列在這裡的題目（職業、造訪次數）直接存畫面上的文字，職業文字本身已與飯店相同。
+const DEM_CODE_MAP = {
+  dem_gender: {
+    '男性': 'male',
+    '女性': 'female',
+    '非二元性別': 'nonbinary'
+  },
+  dem_age: {
+    '18 歲以下': '<18',
+    '18—24 歲': '18-24',
+    '25—34 歲': '25-34',
+    '35—44 歲': '35-44',
+    '45—54 歲': '45-54',
+    '55—64 歲': '55-64',
+    '65 歲以上': '65+'
+  },
+  dem_edu: {
+    '國中以下': '國中以下',
+    '高中/高職': '高中職',
+    '大學/大專': '大學/大專',
+    '研究所': '研究所',
+    '博士': '博士'
+  },
+  dem_income: {
+    '低於 50 萬': '<50萬',
+    '50—100 萬': '50—100萬',
+    '100—200 萬': '100—200萬',
+    '200 萬以上': '200萬+'
+  }
+};
+
+function toDemCode(qid, label) {
+  if (label === undefined || label === null) return null;
+  const map = DEM_CODE_MAP[qid];
+  if (!map) return label;
+  if (!Object.prototype.hasOwnProperty.call(map, label)) {
+    console.error('[Leofoo] 人口統計選項找不到對應代碼，改存原文字：', qid, label);
+    return label;
+  }
+  return map[label];
+}
 
 const listEl = document.getElementById('question-list');
 let html = '';
@@ -248,23 +295,22 @@ document.getElementById('final-form').addEventListener('submit', async (e) => {
     }
   });
 
-  // 對應到 demographics 表欄位
-  const incomeMap = {
-    '低於 60 萬': 'low',
-    '60 - 150 萬': 'mid',
-    '高於 150 萬': 'high'
-  };
-
-  await window.LEOFOO_SUPABASE.from('demographics').upsert({
+  // 對應到 demographics 表欄位（存檔代碼與飯店研究一致）
+  const { error: demError } = await window.LEOFOO_SUPABASE.from('demographics').upsert({
     session_id: sessionId,
-    gender: formData.dem_gender,
-    age_band: formData.dem_age,
-    occupation: formData.dem_occupation,
-    income_band: incomeMap[formData.dem_income] || formData.dem_income,
-    education: formData.dem_edu,
-    visit_freq: formData.dem_visit_freq,
+    gender: toDemCode('dem_gender', formData.dem_gender),
+    age_band: toDemCode('dem_age', formData.dem_age),
+    occupation: toDemCode('dem_occupation', formData.dem_occupation),
+    income_band: toDemCode('dem_income', formData.dem_income),
+    education: toDemCode('dem_edu', formData.dem_edu),
+    visit_freq: toDemCode('dem_visit_freq', formData.dem_visit_freq),
     created_at: new Date().toISOString()
   }, { onConflict: 'session_id' });
+
+  if (demError) {
+    console.error('[Leofoo] 人口統計儲存失敗', demError);
+    await window.leofooTrack.trackEvent('final', 'demographics_save_error', { message: demError.message });
+  }
 
   // 3. 標記完成
   await window.leofooSession.markSessionCompleted();
