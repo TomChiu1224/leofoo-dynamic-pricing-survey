@@ -151,6 +151,9 @@ body{background:#f4f4f4;}
 <script src="js/tracking.js"></script>
 <script>
 document.getElementById('start-btn').addEventListener('click', async () => {
+  // 2026/10/29：已經開始填的人（同一個分頁），直接帶回目前進度，不把進度倒回 T1
+  if (window.leofooSession.resumeIfStarted()) return;
+
   const btn = document.getElementById('start-btn');
   btn.disabled = true;
   btn.innerHTML = '<span class="loading"></span> 正在進入...';
