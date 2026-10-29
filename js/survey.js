@@ -383,7 +383,28 @@ function collectAnswers(questionOrder) {
 }
 
 // 提交答案到 Supabase（含 step 標記）
+// 2026/10/29 新增：每個作答階段只能在對應的進度送出（第二層防護）
+// 就算頁面從返回鍵快取還原、或同一人開了兩個分頁，也不會用舊頁面蓋掉已送出的答案。
+const STEP_REQUIRED_PROGRESS = {
+  T1: 't1_page',
+  filler: 'filler',
+  T2: 't2_page',
+  T3: 't3_page',
+  final: 'final'
+};
+
 async function submitAnswers(answers, step) {
+  const requiredProgress = STEP_REQUIRED_PROGRESS[step];
+  if (requiredProgress && window.leofooSession) {
+    const progress = window.leofooSession.getProgress();
+    if (progress !== requiredProgress) {
+      console.warn('[Leofoo] 進度為「' + progress + '」，不接受「' + step + '」的答案，已帶回目前頁面');
+      window.leofooSession.redirectToProgressPage(progress);
+      // 不寫入、也不回傳結果：讓頁面停在「處理中」直到跳轉完成，後續的寫入都不會執行
+      return new Promise(() => {});
+    }
+  }
+
   // 等待 Supabase 連線就緒
   if (!window.LEOFOO_SUPABASE_READY) {
     await window.waitForSupabase();
