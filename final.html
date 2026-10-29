@@ -159,7 +159,18 @@ body{background:#f4f4f4;}
 <script src="js/survey.js"></script>
 <script>
 if (!window.leofooSession.checkProgress('final')) { /* 已重定向 */ }
-window.leofooTrack.trackPageView('final');
+
+// 2026/10/29 新增（版本 final_20261029）：
+// 末頁最後加 1 題「是否曾在遊樂園、主題樂園或動物園工作」，用來在分析時辨識業界人士，
+// 做「全部人」與「排除業界人士」兩次分析的穩健性檢查。
+// 答案存 surveys 表：qid = dem_industry、step = final、answer_numeric 1 = 是、0 = 否。
+const FINAL_PAGE_VERSION = 'final_20261029';
+const INDUSTRY_Q = {
+  qid: 'dem_industry',
+  text: '您目前或過去是否曾在遊樂園、主題樂園或動物園工作（含打工、工讀）？'
+};
+
+window.leofooTrack.trackPageView('final', { page_version: FINAL_PAGE_VERSION });
 
 const group = window.leofooSession.getCurrentGroup();
 
@@ -264,6 +275,9 @@ DEM_QUESTIONS.forEach((q, idx) => {
   html += window.leofooSurvey.renderSingleChoice(q.qid, q.text, idx + 2, q.options);
 });
 
+// 3. 業界身分（最後一題）
+html += window.leofooSurvey.renderYesNo(INDUSTRY_Q.qid, INDUSTRY_Q.text, DEM_QUESTIONS.length + 2);
+
 listEl.innerHTML = html;
 window.leofooSurvey.setupAnswerWatcher();
 window.leofooSurvey.setupGatekeeping('submit-btn', {
@@ -285,6 +299,14 @@ document.getElementById('final-form').addEventListener('submit', async (e) => {
   // 1. 提交操弄檢核到 surveys 表
   const mcAnswer = window.leofooSurvey.collectAnswers([mcQ.qid]).filter(a => a.qid === mcQ.qid);
   await window.leofooSurvey.submitAnswers(mcAnswer, 'final');
+
+  // 1-2. 提交業界身分題到 surveys 表（與操弄檢核分開送出，任一筆失敗不影響另一筆）
+  const industryAnswer = window.leofooSurvey.collectAnswers([INDUSTRY_Q.qid]).filter(a => a.qid === INDUSTRY_Q.qid);
+  const industryOk = await window.leofooSurvey.submitAnswers(industryAnswer, 'final');
+  if (!industryOk) {
+    console.error('[Leofoo] 業界身分題儲存失敗');
+    await window.leofooTrack.trackEvent('final', 'industry_save_error', { qid: INDUSTRY_Q.qid, page_version: FINAL_PAGE_VERSION });
+  }
 
   // 2. 提交人口統計到 demographics 表
   const formData = {};
