@@ -164,7 +164,15 @@ if (!window.leofooSession.checkProgress('final')) { /* 已重定向 */ }
 // 末頁最後加 1 題「是否曾在遊樂園、主題樂園或動物園工作」，用來在分析時辨識業界人士，
 // 做「全部人」與「排除業界人士」兩次分析的穩健性檢查。
 // 答案存 surveys 表：qid = dem_industry、step = final、answer_numeric 1 = 是、0 = 否。
-const FINAL_PAGE_VERSION = 'final_20261029';
+//
+// 2026/10/29 修改（版本 final_20261029b）：操弄檢核改成五組共用同一題選擇題。
+// 舊版每組只看到自己那組的是非題（mc_A～mc_E），容易順手答「是」，五組通過率也不能比較。
+// 新版五組都看同一題（qid = mc_strategy），位置不變（末頁第 1 題，仍在所有依變項之後）。
+// 選項代碼固定：1 業者公告漲價原因、2 原價與現價的價格對照、3 購票贈送折價券、
+//               4 剩餘票數提醒、5 以上都沒有、6 不記得了。
+// 各組正確答案：A = 5、B = 1、C = 2、D = 3、E = 4；選 6（不記得了）算沒答對。
+// 分析規則：答錯的人主要分析照樣保留，只另外跑一次「只留答對者」的比較。
+const FINAL_PAGE_VERSION = 'final_20261029b';
 const INDUSTRY_Q = {
   qid: 'dem_industry',
   text: '您目前或過去是否曾在遊樂園、主題樂園或動物園工作（含打工、工讀）？'
@@ -174,16 +182,22 @@ window.leofooTrack.trackPageView('final', { page_version: FINAL_PAGE_VERSION });
 
 const group = window.leofooSession.getCurrentGroup();
 
-// 5 組對應的操弄檢核題
-const MC_QUESTIONS = {
-  'A': { qid: 'mc_A', text: '先前看到的暑假票畫面中，業者沒有提供任何漲價的相關說明' },
-  'B': { qid: 'mc_B', text: '先前看到的暑假票畫面中，業者提供「因應旺季營運成本」的漲價理由' },
-  'C': { qid: 'mc_C', text: '先前看到的暑假票畫面中，有「原價 $1,400」與「暑假票 $1,624」的價格比較' },
-  'D': { qid: 'mc_D', text: '先前看到的暑假票畫面中，有「獲得 $200 折價券」的贈品訊息' },
-  'E': { qid: 'mc_E', text: '先前看到的暑假票畫面中，有「今日剩餘票數」的數量提示' }
+// 操弄檢核：五組共用同一題（選項順序固定，代碼 = 第幾個選項）
+const MC_Q = {
+  qid: 'mc_strategy',
+  text: '剛才顯示 NT$1,624 的票價畫面上，除了票價之外，還出現了下列哪一項？',
+  options: [
+    '業者公告漲價原因',
+    '原價與現價的價格對照',
+    '購票贈送折價券',
+    '剩餘票數提醒',
+    '以上都沒有',
+    '不記得了'
+  ]
 };
 
-const mcQ = MC_QUESTIONS[group];
+// 各組的正確答案代碼
+const MC_EXPECTED = { A: 5, B: 1, C: 2, D: 3, E: 4 };
 
 // 人口統計題
 // 2026/10/28：性別、年齡、教育程度、年收入、職業的選項與存檔代碼，
@@ -267,8 +281,8 @@ function toDemCode(qid, label) {
 const listEl = document.getElementById('question-list');
 let html = '';
 
-// 1. 操弄檢核（第 1 題，後置）
-html += window.leofooSurvey.renderYesNo(mcQ.qid, mcQ.text, 1);
+// 1. 操弄檢核（第 1 題，後置；五組共用同一題）
+html += window.leofooSurvey.renderSingleChoice(MC_Q.qid, MC_Q.text, 1, MC_Q.options);
 
 // 2. 人口統計（接續）
 DEM_QUESTIONS.forEach((q, idx) => {
@@ -296,9 +310,23 @@ document.getElementById('final-form').addEventListener('submit', async (e) => {
 
   const sessionId = window.leofooSession.getCurrentSessionId();
 
-  // 1. 提交操弄檢核到 surveys 表
-  const mcAnswer = window.leofooSurvey.collectAnswers([mcQ.qid]).filter(a => a.qid === mcQ.qid);
-  await window.leofooSurvey.submitAnswers(mcAnswer, 'final');
+  // 1. 提交操弄檢核到 surveys 表（qid = mc_strategy，answer_numeric = 選項代碼 1～6）
+  const mcAnswer = window.leofooSurvey.collectAnswers([MC_Q.qid]).filter(a => a.qid === MC_Q.qid);
+  const mcOk = await window.leofooSurvey.submitAnswers(mcAnswer, 'final');
+  const mcCode = mcAnswer.length ? mcAnswer[0].answer_numeric : null;
+  const mcExpected = Object.prototype.hasOwnProperty.call(MC_EXPECTED, group) ? MC_EXPECTED[group] : null;
+  if (!mcOk) {
+    console.error('[Leofoo] 操弄檢核儲存失敗');
+    await window.leofooTrack.trackEvent('final', 'mc_save_error', { qid: MC_Q.qid, page_version: FINAL_PAGE_VERSION });
+  }
+  // 方便核對用的紀錄（正式分析以 surveys 表的原始答案＋sessions 表的組別重新計算）
+  await window.leofooTrack.trackEvent('final', 'manipulation_check', {
+    group: group,
+    answer_code: mcCode,
+    expected_code: mcExpected,
+    correct: (mcCode !== null && mcExpected !== null) ? (mcCode === mcExpected) : null,
+    page_version: FINAL_PAGE_VERSION
+  });
 
   // 1-2. 提交業界身分題到 surveys 表（與操弄檢核分開送出，任一筆失敗不影響另一筆）
   const industryAnswer = window.leofooSurvey.collectAnswers([INDUSTRY_Q.qid]).filter(a => a.qid === INDUSTRY_Q.qid);
